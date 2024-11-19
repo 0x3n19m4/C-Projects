@@ -8,6 +8,22 @@ void clear_screen()
     printf("\033[H\033[J");
 }
 
+void core_stat(const char *buffer, const char *core_name, const char *core_lable)
+{
+	char *token = strstr(buffer, core_lable);
+	if (token != NULL)
+	{
+		token += strlen(core_lable);
+
+		while (*token == ' ')
+		{
+			token++;
+		}
+		
+		printf("%s: %s\n", core_name, token);	
+	}
+}
+
 void proc()
 {
     FILE *proc_file;
@@ -30,19 +46,19 @@ void proc()
     {
         if (strncmp(proc_buffer, CPU0, strlen(CPU0)) == 0)
         {
-            printf("Core 0: %s \n", proc_buffer);
+            core_stat(proc_buffer, "Core 0", "cpu0");
         }
         if (strncmp(proc_buffer, CPU1, strlen(CPU1)) == 0)
         {
-            printf("Core 1: %s \n", proc_buffer);
+            core_stat(proc_buffer, "Core 1", "cpu1");
         }
         if (strncmp(proc_buffer, CPU2, strlen(CPU2)) == 0)
         {
-            printf("Core 2: %s \n", proc_buffer);
+            core_stat(proc_buffer, "Core 2", "cpu2");
         }
         if (strncmp(proc_buffer, CPU3, strlen(CPU3)) == 0)
         {
-            printf("Core 3: %s \n", proc_buffer);
+            core_stat(proc_buffer, "Core 3", "cpu3");
         }
         if (strncmp(proc_buffer, PROCESSES, strlen(PROCESSES)) == 0)
         {
@@ -82,7 +98,7 @@ void memory()
         {
             printf("%s \n", mem_buffer);
         }
-        if (strncmp(mem_buffer, MEM_FREE, strlen(MEM_FREE) == 0))
+        if (strncmp(mem_buffer, MEM_FREE, strlen(MEM_FREE)) == 0)
         {
             printf("%s \n", mem_buffer);
         }
