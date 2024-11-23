@@ -27,11 +27,15 @@ void core_stat(const char *buffer, const char *core_name, const char *core_lable
 void proc()
 {
     FILE *proc_file;
-    char proc_buffer[256];
+    char proc_buffer[512];
     const char *CPU0 = "cpu0";  
     const char *CPU1 = "cpu1";
     const char *CPU2 = "cpu2";
     const char *CPU3 = "cpu3";
+    const char *CPU4 = "cpu4";  
+    const char *CPU5 = "cpu5";
+    const char *CPU6 = "cpu6";
+    const char *CPU7 = "cpu7";
     const char *PROCESSES = "processes";
     const char *PROCS_RUNNING = "procs_running";
     const char *PROCS_BLOCKED = "procs_blocked";
@@ -59,6 +63,22 @@ void proc()
         if (strncmp(proc_buffer, CPU3, strlen(CPU3)) == 0)
         {
             core_stat(proc_buffer, "Core 3", "cpu3");
+        }
+        if (strncmp(proc_buffer, CPU4, strlen(CPU4)) == 0)
+        {
+            core_stat(proc_buffer, "Core 4", "cpu4");
+        }
+        if (strncmp(proc_buffer, CPU5, strlen(CPU5)) == 0)
+        {
+            core_stat(proc_buffer, "Core 5", "cpu5");
+        }
+        if (strncmp(proc_buffer, CPU6, strlen(CPU6)) == 0)
+        {
+            core_stat(proc_buffer, "Core 6", "cpu6");
+        }
+        if (strncmp(proc_buffer, CPU7, strlen(CPU7)) == 0)
+        {
+            core_stat(proc_buffer, "Core 7", "cpu7");
         }
         if (strncmp(proc_buffer, PROCESSES, strlen(PROCESSES)) == 0)
         {
