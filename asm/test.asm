@@ -1,58 +1,51 @@
-section .bss
-        buffer resb 128
-
-section .data
-        prompt db "What's your name? ", 0x0a
-        hello db "Hello ", 0x0a
-        newline db 10, 0x0a
-        len_prompt equ $ - prompt
-        len_hello equ $ - hello
-
-section .text
-        global _start
-
-_start:
-        ; first out
-        mov rax, 1
-        mov rdi, 1
-        mov rsi, prompt
-        mov rdx, len_prompt
-        syscall
-
-        ; input
-        mov rax, 0
-        mov rdi, 0
-        mov rsi, buffer
-        mov rdx, 128
-        syscall
-
-        mov rbx, buffer
-find_newline:
-        cmp byte [rbx], 10
-        je newline_found
-        cmp byte [rbx], 0
-        je newline_found
-        inc rbx
-        je find_newline
-
-newline_found:
-        mov byte [rbx], 0
-
-        ; second out
-        mov rax, 1
-        mov rdi, 1
-        mov rsi, hello
-        mov rdx, len_hello
-        syscall
-
-        ; third out
-        mov rax, 1
-        mov rdi, 1
-        mov rsi, buffer
-        mov rdx, rbx
-        syscall
-
-        ; exit
-        mov rax, 60
-        xor rdi, rdi
-        syscall
+section .bss                            
+        name resb 16                    
+                                        
+section .data                           
+        text1 db "What is your name? "  
+        text2 db "Hello, "              
+                                        
+section .text                           
+        global _start                   
+                                        
+_start:                                 
+        call _Qstn                      
+        call _GetName                   
+        call _HelloPrnt                 
+        call _NamePrnt                  
+                                        
+        mov rax, 60                     
+        syscall                         
+                                        
+_Qstn:                                  
+        mov rax, 1                      
+        mov rdi, 1                      
+        mov rsi, text1                  
+        mov rdx, 19                     
+        syscall                         
+        ret                             
+                                        
+_GetName:                               
+        ; input                         
+        mov rax, 0                      
+        mov rdi, 0                      
+        mov rsi, name                   
+        mov rdx, 16                     
+        syscall                         
+        ret                             
+                                        
+_HelloPrnt:                             
+        mov rax, 1                      
+        mov rdi, 1                      
+        mov rsi, text2                  
+        mov rdx, 7                      
+        syscall                         
+        ret                             
+                                        
+_NamePrnt:                              
+        mov rax, 1                      
+        mov rdi, 1                      
+        mov rsi, name                   
+        mov rdx, 16                     
+        syscall                         
+        ret                             
