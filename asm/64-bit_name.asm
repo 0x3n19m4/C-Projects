@@ -14,7 +14,8 @@ _start:
         call _HelloPrnt                 
         call _NamePrnt                  
                                         
-        mov rax, 60                     
+        mov rax, 60
+	xor rdi, rdi                     
         syscall                         
                                         
 _Qstn:                                  
