@@ -8,19 +8,19 @@ void clear_screen()
     printf("\033[H\033[J");
 }
 
-void core_stat(const char *buffer, const char *core_name, const char *core_lable)
+void core_stat(const char *BUFFER, const char *CORE_NAME, const char *CORE_LABLE)
 {
-	char *token = strstr(buffer, core_lable);
+	char *token = strstr(BUFFER, CORE_LABLE);
 	if (token != NULL)
 	{
-		token += strlen(core_lable);
+		token += strlen(CORE_LABLE);
 
 		while (*token == ' ')
 		{
 			token++;
 		}
 		
-		printf("%s: %s\n", core_name, token);	
+		printf("%s: %s\n", CORE_NAME, token);	
 	}
 }
 
