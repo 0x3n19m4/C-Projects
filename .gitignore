@@ -1,2 +1,7 @@
 *.elf
 *.out
+*.o
+*.cmd
+*.symvers
+*.order
+*.mod
