@@ -1,1 +1,0 @@
-savedcmd_/home/kali/C/kernel_modules/Module.symvers :=  scripts/mod/modpost -M -m       -o /home/kali/C/kernel_modules/Module.symvers -T /home/kali/C/kernel_modules/modules.order -i Module.symvers -e 

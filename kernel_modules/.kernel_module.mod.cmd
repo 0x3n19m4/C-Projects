@@ -1,1 +1,0 @@
-savedcmd_/home/kali/C/kernel_modules/kernel_module.mod := printf '%s\n'   kernel_module.o | awk '!x[$$0]++ { print("/home/kali/C/kernel_modules/"$$0) }' > /home/kali/C/kernel_modules/kernel_module.mod
