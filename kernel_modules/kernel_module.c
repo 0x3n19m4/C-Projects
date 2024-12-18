@@ -19,4 +19,4 @@ static void __exit lkm_exit_module(void)
 }
 
 module_init(lkm_init_module);
-module_exit(lkm_init_module);
+module_exit(lkm_exit_module);
