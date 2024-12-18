@@ -51,5 +51,5 @@ static int driver_exit(void)
 {
 	cdev_del(mcdev);
 	unregister_chrdev_region(dev_num, 1);
-	printk(KERNEL_ALERT "[INFO] unloaded module");
+	printk(KERN_ALERT "[INFO] unloaded module");
 }
