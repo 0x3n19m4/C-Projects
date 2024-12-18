@@ -1,55 +1,61 @@
+#include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
-#include <linux/cdev.h>
-#include <linux/semaphore.h>
-#include <asm/uaccess.h>
 
-struct fake_device
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Tony_Montana");
+MODULE_DESCRIPTION("Cat Module");
+MODULE_VERSION("1.0.0");
+
+static int driver_open(struct inode *device_file, struct file *instance)
 {
-	char data[100];
-	struct semaphore sem;
-} virtual_device;
-
-struct cdev *mcdev;
-int numbers;
-int ret;
-
-dev_t dev_num;
-
-#define DEVICE_NAME "fakedevice"
-
-static int driver_entry(void)
-{
-	ret = alloc_chrdev_region(&dev_num, 0, 1, DEVICE_NAME);
-	if (ret < 0)
-	{
-		printk(KERN_ALERT "[ERROR] Failed to allocate a number");
-		return ret;
-	}
-	number = MAJOR(dev_num);
-	printk(KERN_INFO "[INFO] number is &d, number");
-	printk(KERN_INFO "[INFO] \tuce \"mknod /dev/%s c %d 0\" for device file", DEVICE_NAME, number);
-
-	mcdev = cdev_alloc();
-	mcdev->ops = &fops;
-	mcdev->owner = THIS_MODULE;
-
-	ret = cdev_add(mcdev, dev_num, 1);
-	if (ret < 0)
-	{
-		printk(KERN_ALERT "[ERROR] unable to add cdev to kernel");
-		return ret;
-	}
-
-	sema_init(&virtual_device.sem, 1);
-
+	printk("dev_nr - open was called!\n");
 	return 0;
 }
 
-static int driver_exit(void)
+static int driver_close(struct inode *device_file, struct file *instance)
 {
-	cdev_del(mcdev);
-	unregister_chrdev_region(dev_num, 1);
-	printk(KERN_ALERT "[INFO] unloaded module");
+	printk("dev_nr - close was called!\n");
+	return 0;
 }
+
+static struct file_operations fops = {
+	.owner = THIS_MODULE,
+	.open = driver_open,
+	.release = driver_close
+};
+
+#define MYMAJOR 90
+
+static int __init ModuleInit(void)
+{
+	int retval;
+
+	printk(KERN_ALERT "Hello, kernel!\n");
+	retval = register_chrdev(MYMAJOR, "my_dev_nr", &fops);
+
+	if(retval == 0)
+	{
+		printk("dev_nr - in registered Device number Majors: %d, Minor: %d\n", MYMAJOR, 0);
+	}
+	else if(retval > 0)
+	{
+		printk("dev_nr - in registered Device number Majors: %d, Minor: %d\n", retval>>20, retval&0xfffff);	
+	}
+	else
+	{
+		printk("Could not register device number!\n");
+		return -1;
+	}
+	return 0;
+}
+
+static void __exit ModuleExit(void)
+{
+	unregister_chrdev(MYMAJOR, "my_dev_nr");
+	printk(KERN_ALERT "Goodbye, kernel!\n");
+}
+
+module_init(ModuleInit);
+module_exit(ModuleExit);
