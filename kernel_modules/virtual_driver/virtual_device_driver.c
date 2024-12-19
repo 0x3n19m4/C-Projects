@@ -7,11 +7,18 @@
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Tony_Montana");
-MODULE_DESCRIPTION("Cat Module");
+MODULE_DESCRIPTION("Cats Module");
 MODULE_VERSION("1.0.0");
 
 static char buffer[255];
-static int buffer_pointer;
+static size_t buffer_pointer;
+
+static dev_t my_device_nr;
+static struct class *my_class;
+static struct cdev my_device;
+
+#define DRIVER_NAME "dummydriver"
+#define DRIVER_CLASS "MyModuleClass"
 
 static ssize_t driver_read(struct file *File, char *user_buffer, size_t len, loff_t *offset)
 {
@@ -62,34 +69,54 @@ static struct file_operations fops = {
 	.read = driver_read
 };
 
-#define MYMAJOR 90
-
 static int __init ModuleInit(void)
 {
-	int retval;
+	//int retval;
 
 	printk(KERN_ALERT "Hello, kernel!\n");
-	retval = register_chrdev(MYMAJOR, "my_dev_nr", &fops);
 
-	if(retval == 0)
+	if(alloc_chrdev_region(&my_device_nr, 0, 1, DRIVER_NAME) < 0)
 	{
-		printk("[INFO] dev_nr - in registered Device number Majors: %d, Minor: %d\n", MYMAJOR, 0);
-	}
-	else if(retval > 0)
-	{
-		printk("[INFO] dev_nr - in registered Device number Majors: %d, Minor: %d\n", retval>>20, retval&0xfffff);	
-	}
-	else
-	{
-		printk("[ERROR] Could not register device number!\n");
+		printk("[ERROR]Device Nr. could not be allocated!\n");
 		return -1;
 	}
+	printk("[INFO] read_write - Device Nr. Major: %d, Minor: %d was registered", my_device_nr >> 20, my_device_nr && 0xfffff);
+
+	if((my_class = class_create(DRIVER_CLASS)) == NULL)
+	{
+		printk("[ERROR] Device class can not be created!\n");
+		goto ClassError;
+	}
+
+	if(device_create(my_class, NULL, my_device_nr, NULL, DRIVER_NAME) == NULL)
+	{
+		printk("[ERROR] Can not create device file!\n");
+		goto FileError;
+	}
+
+	cdev_init(&my_device, &fops);
+	if (cdev_add(&my_device, my_device_nr, 1) == -1)
+	{
+		printk("[ERROR] Registering of device to kernel failed!\n");
+		goto AddError;
+	}
+
 	return 0;
+AddError:
+	device_destroy(my_class, my_device_nr);
+FileError:
+	class_destroy(my_class);
+ClassError:
+	unregister_chrdev(my_device_nr, DRIVER_NAME);
+	return -1;
 }
 
 static void __exit ModuleExit(void)
 {
-	unregister_chrdev(MYMAJOR, "my_dev_nr");
+	cdev_del(&my_device);
+	device_destroy(my_class, my_device_nr);
+	class_destroy(my_class);
+	unregister_chrdev(my_device_nr, DRIVER_NAME);
 	printk(KERN_ALERT "Goodbye, kernel!\n");
 }
 
