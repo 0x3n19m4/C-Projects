@@ -3,6 +3,18 @@
 #include <string.h>
 #include <unistd.h>
 
+#define CPU0 "cpu0"  
+#define CPU1 "cpu1"
+#define CPU2 "cpu2"
+#define CPU3 "cpu3"
+#define CPU4 "cpu4"  
+#define CPU5 "cpu5"
+#define CPU6 "cpu6"
+#define CPU7 "cpu7"
+#define PROCESSES "processes"
+#define PROCS_RUNNING "procs_running"
+#define PROCS_BLOCKED "procs_blocked"
+
 void clear_screen()
 {
     printf("\033[H\033[J");
@@ -28,17 +40,6 @@ void proc()
 {
     FILE *proc_file;
     char proc_buffer[512];
-    const char *CPU0 = "cpu0";  
-    const char *CPU1 = "cpu1";
-    const char *CPU2 = "cpu2";
-    const char *CPU3 = "cpu3";
-    const char *CPU4 = "cpu4";  
-    const char *CPU5 = "cpu5";
-    const char *CPU6 = "cpu6";
-    const char *CPU7 = "cpu7";
-    const char *PROCESSES = "processes";
-    const char *PROCS_RUNNING = "procs_running";
-    const char *PROCS_BLOCKED = "procs_blocked";
 
     proc_file = fopen("/proc/stat", "r");
     if (proc_file == NULL)
@@ -97,14 +98,14 @@ void proc()
     fclose(proc_file);
 }
 
+#define MEM_TOTAL "MemTotal"
+#define MEM_FREE "MemFree"
+#define MEM_AVAILABLE "MemAvailable"
+
 void memory()
 {
     FILE *mem_file;
     char mem_buffer[256];
-
-    const char *MEM_TOTAL = "MemTotal";
-    const char *MEM_FREE = "MemFree";
-    const char *MEM_AVAILABLE = "MemAvailable";
 
     mem_file = fopen("/proc/meminfo", "r");
     if (mem_file == NULL)
