@@ -4,8 +4,8 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-#define SERVER_IP "10.9.1.254"
-#define SERVER_PORT 5555
+#define SERVER_IP "<IP>"
+#define SERVER_PORT <PORT>
 
 int main() {
     int sock;
