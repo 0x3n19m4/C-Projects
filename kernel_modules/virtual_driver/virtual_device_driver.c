@@ -7,7 +7,7 @@
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Tony_Montana");
-MODULE_DESCRIPTION("Cats Module");
+MODULE_DESCRIPTION("Virtual Driver");
 MODULE_VERSION("1.0.0");
 
 static char buffer[255];
