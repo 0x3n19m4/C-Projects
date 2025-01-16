@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <time.h>
 #include <math.h>
 
@@ -37,7 +38,7 @@ int mod_inverse(int e, int phi_N)
     
     	if (g != 1)
     	{
-        	printf("There is no inverse element");
+        	perror("There is no inverse element");
         	exit(1);
     	}
     
@@ -48,6 +49,8 @@ int compute_private_key(int e, int phi_N)
 {
     	return mod_inverse(e, phi_N);
 }
+
+
 
 int generateRandom()
 {
@@ -81,9 +84,37 @@ int ModForLarge(int base, int exp, int mod)
 	return result;
 }
 
-int encrypt(int x, int e, int N)
+int encrypt(char x, int e, int N)
 {
 	return ModForLarge(x, e, N);
+}
+
+int FileEncrypt(const char *input_file, int *output_file, int byte, int e, int N)
+{
+	FILE *in = fopen(input_file, "r");
+	FILE *out = fopen(output_file, "w");
+
+	if(!in || !out)
+	{
+		perror("Error opening file");
+		exit(EXIT_FAILURE);
+	}
+
+    char str[] = "Hello World";
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        int int_str[] = str[i];
+    }
+
+	int byte;
+	while((byte = fgetc(in)) != EOF)
+	{
+		int encrypted_file = ModForLarge(byte, e, N);
+		fwrite(encrypted_file, sizeof(encrypted_file), 1, out);
+	}
+
+	fclose(in);
+	fclose(out);
 }
 
 int decrypt(int x, int e, int N)
@@ -118,13 +149,13 @@ int main(int argc, char *argv[])
     	printf("N: %d\tPhi(N): %d\n", N, phi_N);
     	printf("e: %d\td: %d\n", e, d);
 
-	int ToEncrypt = atoi(argv[1]);
+	int ToEncrypt = 13;
 
 	int encrypted = encrypt(ToEncrypt, e, N);
 	printf("Encrypted: %d\n", encrypted);
 
 	int decrypted = decrypt(encrypted, d, N);
 	printf("Decrypted: %d\n", decrypted);
-
-    	return 0;
+	
+	return 0;
 }
