@@ -91,7 +91,7 @@ int decrypt(int x, int e, int N)
 	return ModForLarge(x, e, N);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 	srand(time(NULL));
 		
@@ -118,7 +118,7 @@ int main()
     	printf("N: %d\tPhi(N): %d\n", N, phi_N);
     	printf("e: %d\td: %d\n", e, d);
 
-	int ToEncrypt = 13;
+	int ToEncrypt = atoi(argv[1]);
 
 	int encrypted = encrypt(ToEncrypt, e, N);
 	printf("Encrypted: %d\n", encrypted);
