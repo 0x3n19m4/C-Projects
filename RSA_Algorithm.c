@@ -52,6 +52,7 @@ int compute_private_key(int e, int phi_N)
 int generateRandom()
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
     int primes[] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 
@@ -62,6 +63,8 @@ int generateRandom()
     return primes[rand() % size];
 =======
 >>>>>>> e4a4f7a (Update RSA_Algorithm.c)
+=======
+>>>>>>> fe4bedf (Update RSA_Algorithm.c)
 	int primes[50] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 
                                 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 
                                 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 
@@ -71,13 +74,17 @@ int generateRandom()
 	int randomIndex = rand() % size;
 	return primes[randomIndex];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 8c5d425 (Update RSA_Algorithm.c)
 >>>>>>> e4a4f7a (Update RSA_Algorithm.c)
+=======
+>>>>>>> fe4bedf (Update RSA_Algorithm.c)
 }
 
 int main()
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -87,14 +94,19 @@ int main()
         int q = generateRandom();
 =======
 >>>>>>> e4a4f7a (Update RSA_Algorithm.c)
+=======
+>>>>>>> fe4bedf (Update RSA_Algorithm.c)
 		srand(time(NULL));
 		
     	int p = generateRandom();
     	int q = generateRandom();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 8c5d425 (Update RSA_Algorithm.c)
 >>>>>>> e4a4f7a (Update RSA_Algorithm.c)
+=======
+>>>>>>> fe4bedf (Update RSA_Algorithm.c)
 
     	if(p == q)
     	{
