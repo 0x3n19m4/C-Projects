@@ -61,6 +61,36 @@ int generateRandom()
 	return primes[randomIndex];
 }
 
+int ModForLarge(int base, int exp, int mod)
+{
+	int result = 1;
+	base = base % mod;
+
+	while(exp > 0)
+	{
+		if(exp % 2 == 1)
+		{
+			result = (result * base) % mod;
+		}
+
+		exp = exp >> 1;
+
+		base = (base * base) % mod;
+	}
+
+	return result;
+}
+
+int encrypt(int x, int e, int N)
+{
+	return ModForLarge(x, e, N);
+}
+
+int decrypt(int x, int e, int N)
+{
+	return ModForLarge(x, e, N);
+}
+
 int main()
 {
 	srand(time(NULL));
@@ -87,6 +117,14 @@ int main()
     	printf("p: %d\tq: %d\n", p, q);
     	printf("N: %d\tPhi(N): %d\n", N, phi_N);
     	printf("e: %d\td: %d\n", e, d);
+
+	int ToEncrypt = 13;
+
+	int encrypted = encrypt(ToEncrypt, e, N);
+	printf("Encrypted: %d\n", encrypted);
+
+	int decrypted = decrypt(encrypted, d, N);
+	printf("Decrypted: %d\n", decrypted);
 
     	return 0;
 }
