@@ -89,10 +89,98 @@ int encrypt(char x, int e, int N)
 	return ModForLarge(x, e, N);
 }
 
-int FileEncrypt(const char *input_file, int *output_file, int byte, int e, int N)
+char *FileRead(const char *input)
 {
-	FILE *in = fopen(input_file, "r");
+	FILE *in = fopen(input, "r");
+	if(!in)
+	{
+		perror("File doesn't open");
+		return NULL;
+	}
+
+	char *buffer = NULL;
+	size_t size = 0;
+	size_t capacity = 1024;
+	buffer = malloc(capacity);
+	if(!buffer)
+	{
+		perror("Memory allocating error.");
+		fclose(in);
+		return NULL;
+	}
+
+	size_t bytes_read;
+	while((bytes_read = fread(buffer + size, 1, 1024, in)) > 0)
+	{
+		size += bytes_read;
+		if(size + 1024 > capacity)
+		{
+			capacity *= 2;
+			buffer = realloc(buffer, capacity);
+			if(!buffer)
+			{
+				perror("Memory allocating error.");
+				fclose(in);
+				return NULL;
+			}
+		}
+	}
+
+	buffer[size] = '\0';
+	fclose(in);
+	return buffer;
+}
+
+int FileEncrypt(const char *input_file, const char *output_file, int e, int N)
+{
 	FILE *out = fopen(output_file, "w");
+
+	if(!out)
+	{
+		perror("Error opening file");
+		exit(EXIT_FAILURE);
+	}
+
+	char *data = FileRead(input_file);
+	char *encrypted_data = malloc(*data);
+	int ascii_codes[100], i;
+	int lenght = strlen(data);
+	
+	if(data)
+	{
+		printf("Text: %s\n", data);
+	}
+
+	for (i = 0; i < lenght; i++) 
+	{
+        ascii_codes[i] = (int)data[i];
+        printf("ASCII %c = %d\n", data[i], ascii_codes[i]);
+    }
+
+	for(int i = 0; i < lenght; i++)
+	{
+		encrypted_data[i] = encrypt(data[i], e, N);
+		printf("Encrypted: %d\n", (unsigned char)encrypted_data[i]);
+	}
+
+	fwrite(&encrypted_data, sizeof(char), strlen(encrypted_data), out);
+
+	fclose(out);
+	free(data);
+	free(encrypted_data);
+    return 0;
+}
+
+int decrypt(int x, int d, int N)
+{
+	return ModForLarge(x, d, N);
+}
+
+int FileDecrypt(const char *input_file, const char *output_file, int d, int N)
+{
+	
+	FILE *in = fopen(input_file, "rb");
+	FILE *out = fopen(output_file, "wb");
 
 	if(!in || !out)
 	{
@@ -100,26 +188,18 @@ int FileEncrypt(const char *input_file, int *output_file, int byte, int e, int N
 		exit(EXIT_FAILURE);
 	}
 
-    char str[] = "Hello World";
-
-    for (int i = 0; str[i] != '\0'; i++) {
-        int int_str[] = str[i];
-    }
-
-	int byte;
-	while((byte = fgetc(in)) != EOF)
+	int encrypted;
+	while(fread(&encrypted, sizeof(int), 1, in))
 	{
-		int encrypted_file = ModForLarge(byte, e, N);
-		fwrite(encrypted_file, sizeof(encrypted_file), 1, out);
+		//int encrypted_file = ModForLarge(byte, e, N);
+		//fwrite(encrypted_file, sizeof(encrypted_file), 1, out);
+		unsigned char decrypted = decrypt(encrypted, d, N);
+		fwrite(&decrypted, sizeof(unsigned char), 1, out);
 	}
 
 	fclose(in);
 	fclose(out);
-}
-
-int decrypt(int x, int e, int N)
-{
-	return ModForLarge(x, e, N);
+	return 0;
 }
 
 int main(int argc, char *argv[])
@@ -145,6 +225,10 @@ int main(int argc, char *argv[])
 
     	int d = compute_private_key(e, phi_N);
 
+	printf("Usage: \n");
+	printf("\t --encypt <file to encrypt>\n");
+	printf("\t --decrypt <file to decrypt>\n");
+
     	printf("p: %d\tq: %d\n", p, q);
     	printf("N: %d\tPhi(N): %d\n", N, phi_N);
     	printf("e: %d\td: %d\n", e, d);
@@ -156,6 +240,8 @@ int main(int argc, char *argv[])
 
 	int decrypted = decrypt(encrypted, d, N);
 	printf("Decrypted: %d\n", decrypted);
-	
+
+	FileEncrypt(argv[1], argv[2], e, N);
+
 	return 0;
 }
