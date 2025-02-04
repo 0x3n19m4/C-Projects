@@ -47,13 +47,24 @@ char *file_read(const char *input)
 */
 int main(int argc, char *argv[])
 {
-	FILE *out = fopen("output_file.txt", "r");
-	char encrypted_data[50];
+	//FILE *out = fopen("test.txt", "w");
+	FILE *in = fopen("test.txt", "r");
 
-	fread(&encrypted_data, sizeof(encrypted_data), 1, out);
+	//char encrypted_data[50] = {"Hello World"};
+	char decrypted_data[50];
+
+	//fwrite(&encrypted_data, sizeof(char), strlen(encrypted_data), out);
+	//fprintf(out, encrypted_data);
+	//fread(&encrypted_data, sizeof(encrypted_data), 1, out);
 	//printf("%d\n", strlen(encrypted_data));
-	//fread(&encrypted_data, sizeof(encrypted_data), strlen(encrypted_data), out);
-	printf("%c", encrypted_data);
-	fclose(out);
+	fread(&decrypted_data, sizeof(decrypted_data), 50, in);
+
+	for(int i = 0; i < strlen(decrypted_data); i++)
+	{
+		printf("%c", decrypted_data[i]);
+	}	
+	
+	//fclose(out);
+	fclose(in);
 	return 0;
 }

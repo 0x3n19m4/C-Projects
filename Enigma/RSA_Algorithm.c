@@ -64,9 +64,9 @@ int generateRandom()
 	return primes[randomIndex];
 }
 
-int ModForLarge(int base, int exp, int mod)
+int ModForLarge(long long base, int exp, int mod)
 {
-	int result = 1;
+	long long result = 1;
 	base = base % mod;
 
 	while(exp > 0)
@@ -84,14 +84,14 @@ int ModForLarge(int base, int exp, int mod)
 	return result;
 }
 
-int encrypt(char x, int e, int N)
+int encrypt(long x, int e, int N)
 {
 	return ModForLarge(x, e, N);
 }
 
 char *FileRead(const char *input)
 {
-	FILE *in = fopen(input, "r");
+	FILE *in = fopen(input, "rb");
 	if(!in)
 	{
 		perror("File doesn't open");
@@ -142,10 +142,18 @@ int FileEncrypt(const char *input_file, const char *output_file, int e, int N)
 	}
 
 	char *data = FileRead(input_file);
-	char *encrypted_data = malloc(*data);
-	int ascii_codes[100], i;
 	int lenght = strlen(data);
+	char *encrypted_data = malloc(lenght);
+	int ascii_codes[100], i;
 	
+
+	if(!encrypted_data)
+	{
+		perror("Memory allocating error");
+		fclose(out);
+		exit(EXIT_FAILURE);
+	}
+
 	if(data)
 	{
 		printf("Text: %s\n", data);
@@ -153,9 +161,9 @@ int FileEncrypt(const char *input_file, const char *output_file, int e, int N)
 
 	for (i = 0; i < lenght; i++) 
 	{
-        ascii_codes[i] = (int)data[i];
-        printf("ASCII %c = %d\n", data[i], ascii_codes[i]);
-    }
+		ascii_codes[i] = (int)data[i];
+		printf("ASCII %c = %d\n", data[i], ascii_codes[i]);
+	}
 
 	for(int i = 0; i < lenght; i++)
 	{
@@ -168,26 +176,50 @@ int FileEncrypt(const char *input_file, const char *output_file, int e, int N)
 	fclose(out);
 	free(data);
 	free(encrypted_data);
-    return 0;
+	return 0;
 }
 
-int decrypt(int x, int d, int N)
+int decrypt(long long x, int d, int N)
 {
 	return ModForLarge(x, d, N);
 }
 
 int FileDecrypt(const char *input_file, const char *output_file, int d, int N)
 {
-	
-	FILE *in = fopen(input_file, "rb");
 	FILE *out = fopen(output_file, "wb");
 
-	if(!in || !out)
+	if(!out)
 	{
 		perror("Error opening file");
 		exit(EXIT_FAILURE);
 	}
 
+	char *data = FileRead(input_file);
+	int lenght = strlen(data);
+	char *decrypted_data = malloc(lenght);
+
+	if(data)
+	{
+		printf("Text: %s\n", data);
+	}
+
+	if(!decrypted_data)
+	{
+		perror("Memory allocating error");
+		fclose(out);
+		free(data);
+		exit(EXIT_FAILURE);
+	}
+
+	for(int i = 0; i < lenght; i++)
+	{
+		decrypted_data[i] = decrypt(data[i], d, N);
+		printf("Decrypted: %d\n", (unsigned char)decrypted_data[i]);
+	}
+
+	fwrite(&decrypted_data, sizeof(char), strlen(decrypted_data), out);
+
+	/*
 	int encrypted;
 	while(fread(&encrypted, sizeof(int), 1, in))
 	{
@@ -196,9 +228,11 @@ int FileDecrypt(const char *input_file, const char *output_file, int d, int N)
 		unsigned char decrypted = decrypt(encrypted, d, N);
 		fwrite(&decrypted, sizeof(unsigned char), 1, out);
 	}
+	*/
 
-	fclose(in);
 	fclose(out);
+	free(data);
+	free(decrypted_data);
 	return 0;
 }
 
@@ -233,15 +267,16 @@ int main(int argc, char *argv[])
     	printf("N: %d\tPhi(N): %d\n", N, phi_N);
     	printf("e: %d\td: %d\n", e, d);
 
-	int ToEncrypt = 13;
+	long ToEncrypt = 404;
 
-	int encrypted = encrypt(ToEncrypt, e, N);
+	long long encrypted = encrypt(ToEncrypt, e, N);
 	printf("Encrypted: %d\n", encrypted);
 
-	int decrypted = decrypt(encrypted, d, N);
+	long long decrypted = decrypt(encrypted, d, N);
 	printf("Decrypted: %d\n", decrypted);
 
 	FileEncrypt(argv[1], argv[2], e, N);
+	FileDecrypt(argv[2], argv[3], d, N);
 
 	return 0;
 }
