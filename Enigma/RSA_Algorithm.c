@@ -133,8 +133,7 @@ char *FileRead(const char *input)
 
 int FileEncrypt(const char *input_file, const char *output_file, int e, int N)
 {
-	FILE *out = fopen(output_file, "w");
-
+	FILE *out = fopen(output_file, "wb");
 	if(!out)
 	{
 		perror("Error opening file");
@@ -142,15 +141,21 @@ int FileEncrypt(const char *input_file, const char *output_file, int e, int N)
 	}
 
 	char *data = FileRead(input_file);
+	if(!data)
+	{
+		fclose(out);
+		exit(EXIT_FAILURE);
+	}
+
 	int lenght = strlen(data);
-	char *encrypted_data = malloc(lenght);
+	int *encrypted_data = malloc(lenght * sizeof(int));
 	int ascii_codes[100], i;
-	
 
 	if(!encrypted_data)
 	{
 		perror("Memory allocating error");
 		fclose(out);
+		free(data);
 		exit(EXIT_FAILURE);
 	}
 
@@ -168,10 +173,10 @@ int FileEncrypt(const char *input_file, const char *output_file, int e, int N)
 	for(int i = 0; i < lenght; i++)
 	{
 		encrypted_data[i] = encrypt(data[i], e, N);
-		printf("Encrypted: %d\n", (unsigned char)encrypted_data[i]);
+		printf("Encrypted: %d\n", encrypted_data[i]);
 	}
 
-	fwrite(&encrypted_data, sizeof(char), strlen(encrypted_data), out);
+	fwrite(encrypted_data, sizeof(int), lenght, out);
 
 	fclose(out);
 	free(data);
@@ -186,6 +191,7 @@ int decrypt(long long x, int d, int N)
 
 int FileDecrypt(const char *input_file, const char *output_file, int d, int N)
 {
+	FILE *in = fopen(input_file, "rb");
 	FILE *out = fopen(output_file, "wb");
 
 	if(!out)
@@ -194,30 +200,34 @@ int FileDecrypt(const char *input_file, const char *output_file, int d, int N)
 		exit(EXIT_FAILURE);
 	}
 
-	char *data = FileRead(input_file);
-	int lenght = strlen(data);
-	char *decrypted_data = malloc(lenght);
+	fseek(in, 0, SEEK_END);
+	size_t size = ftell(in);
+	rewind(in);
 
-	if(data)
-	{
-		printf("Text: %s\n", data);
-	}
+	int lenght = size / sizeof(int);
+	int *encrypted_data = malloc(size);
+	int *decrypted_data = malloc(lenght + 1);
 
-	if(!decrypted_data)
+	if(!encrypted_data || !decrypted_data)
 	{
 		perror("Memory allocating error");
+		fclose(in);
 		fclose(out);
-		free(data);
 		exit(EXIT_FAILURE);
 	}
 
+	fread(encrypted_data, sizeof(int), lenght, in);
+	fclose(in);
+
 	for(int i = 0; i < lenght; i++)
 	{
-		decrypted_data[i] = decrypt(data[i], d, N);
-		printf("Decrypted: %d\n", (unsigned char)decrypted_data[i]);
+		decrypted_data[i] = decrypt(encrypted_data[i], d, N);
+		printf("Decrypted: %d\n", decrypted_data[i]);
 	}
 
-	fwrite(&decrypted_data, sizeof(char), strlen(decrypted_data), out);
+	decrypted_data[size] = '\0';
+
+	fwrite(decrypted_data, sizeof(int), lenght, out);
 
 	/*
 	int encrypted;
@@ -231,7 +241,7 @@ int FileDecrypt(const char *input_file, const char *output_file, int d, int N)
 	*/
 
 	fclose(out);
-	free(data);
+	free(encrypted_data);
 	free(decrypted_data);
 	return 0;
 }
