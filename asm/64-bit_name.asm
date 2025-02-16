@@ -48,9 +48,5 @@ _NamePrnt:
         mov rdi, 1                      
         mov rsi, name                   
         mov rdx, 16                     
-        syscall                         
-<<<<<<< HEAD
-        ret                             
-=======
-        ret                             
->>>>>>> b12d1f4 (Update test.asm)
+        syscall                        
+        ret
