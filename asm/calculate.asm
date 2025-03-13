@@ -1,5 +1,5 @@
 section .bss
-        action_inpt resb 1
+        op resb 1
         num1 resb 16
         num2 resb 16
 
@@ -16,37 +16,57 @@ section .text
         global _start
 
 _start:
-        call _ask
-        call _choose
-        call _ask_fst_num
-        call _inpt_fst_num
+        call _ask_and_choose
+        call _ask_and_inpt_fst_num
+        call _ask_and_inpt_scnd_num
+        call _compare_and_jump
+
+_compare_and_jump:
+        mov rsi, num1
+        call atoi
+        mov rbx, rax
+
+        mov rsi, num2
+        call atoi
+        mov rcx, rax
+
+        mov al, [op]
+
+        cmp al, '+'
+        je _sum
+
+        cmp al, '-'
+        je _subb
+
+        cmp al, '*'
+        je _mull
+
+        cmp al, '/'
+        je _divs
+        ret
 
 
-_ask:
+_ask_and_choose:
         mov rax, 1
         mov rdi, 1
         mov rsi, action
         mov rdx, action_len
         syscall
-        ret
 
-_choose:
         mov rax, 0
         mov rdi, 0
-        mov rsi, action_inpt
+        mov rsi, op
         mov rdx, 1
         syscall
         ret
 
-_ask_fst_num:
+_ask_and_inpt_fst_num:
         mov rax, 1
         mov rdi, 1
         mov rsi, fst_num
         mov rdx, fst_num_len
         syscall
-        ret
 
-_inpt_fst_num:
         mov rax, 0
         mov rdi, 0
         mov rsi, num1
@@ -54,15 +74,13 @@ _inpt_fst_num:
         syscall
         ret
 
-_ask_scnd_num:
+_ask_and_inpt_scnd_num:
         mov rax, 1
         mov rdi, 1
         mov rsi, fst_num
         mov rdx, fst_num_len
         syscall
-        ret
 
-_inpt_scnd_num:
         mov rax, 0
         mov rdi, 0
         mov rsi, num2
@@ -70,12 +88,15 @@ _inpt_scnd_num:
         syscall
         ret
 
-_summation:
+_sum:
         mov rbx, [num1]
         mov rcx, [num2]
         add rbx, rcx
         syscall
         jmp _exit
+
+_subb:
+        mov,
 
 _exit:
         mov rax, 60
