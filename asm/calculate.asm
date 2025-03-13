@@ -96,7 +96,9 @@ _sum:
         jmp _exit
 
 _subb:
-        mov,
+        mov rax, [num1]
+        mov rbx, [num2]
+        sub rax, rbx
 
 _exit:
         mov rax, 60
