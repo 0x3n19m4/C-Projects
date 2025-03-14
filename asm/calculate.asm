@@ -100,6 +100,18 @@ _sub:
         sub rax, rbx
         ret
 
+_mul:
+        mov rax, [num1]
+        mov rbx, [num2]
+        imul rax, rbx
+        ret
+
+_div:
+        mov rax, [num1]
+        xor rdx, rdx
+        div qword [num2]
+        ret
+
 _exit:
         mov rax, 60
         xor rdi, rdi
