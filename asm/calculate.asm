@@ -16,18 +16,21 @@ section .text
         global _start
 
 _start:
-        call _ask_and_choose
-        call _ask_and_inpt_fst_num
-        call _ask_and_inpt_scnd_num
+        call _ask_op
+        call _choose_op
+        call _ask_fst_num
+        call _inpt_fst_num
+        call _ask_scnd_num
+        call _inpt_scnd_num
         call _compare_and_jump
 
 _compare_and_jump:
-        mov rsi, num1
-        call atoi
+        mov rsi, [num1]
+        call _atoi
         mov rbx, rax
 
-        mov rsi, num2
-        call atoi
+        mov rsi, [num2]
+        call _atoi
         mov rcx, rax
 
         mov al, [op]
@@ -45,14 +48,15 @@ _compare_and_jump:
         je _div
         ret
 
-
-_ask_and_choose:
+_ask_op:
         mov rax, 1
         mov rdi, 1
         mov rsi, action
         mov rdx, action_len
         syscall
+        ret
 
+_choose_op:
         mov rax, 0
         mov rdi, 0
         mov rsi, op
@@ -60,13 +64,15 @@ _ask_and_choose:
         syscall
         ret
 
-_ask_and_inpt_fst_num:
+_ask_fst_num:
         mov rax, 1
         mov rdi, 1
         mov rsi, fst_num
         mov rdx, fst_num_len
         syscall
+        ret
 
+_inpt_fst_num:
         mov rax, 0
         mov rdi, 0
         mov rsi, num1
@@ -74,13 +80,15 @@ _ask_and_inpt_fst_num:
         syscall
         ret
 
-_ask_and_inpt_scnd_num:
+_ask_scnd_num:
         mov rax, 1
         mov rdi, 1
-        mov rsi, fst_num
-        mov rdx, fst_num_len
+        mov rsi, scnd_num
+        mov rdx, scnd_num_len
         syscall
+        ret
 
+_inpt_scnd_num:
         mov rax, 0
         mov rdi, 0
         mov rsi, num2
@@ -88,28 +96,48 @@ _ask_and_inpt_scnd_num:
         syscall
         ret
 
+_atoi:
+        xor rax, rax
+        xor rcx, rcx
+        xor rdx, rdx
+
+        mov rbx, 10
+
+_atoi_loop:
+        movzx rcx, byte [rsi]
+        cmp rcx, 0x0A
+        je _atoi_done
+        cmp rcx, 0x30
+        jl _atoi_done
+        cmp rcx, 0x39
+        jg _atoi_done
+
+        sub rcx, 0x30
+        imul rax, rbx
+        add rax, rcx
+
+        inc rsi
+        jmp _atoi_loop
+
+_atoi_done:
+        ret
+
 _sum:
-        mov rsi, [num1]
-        mov rdi, [num2]
         add rbx, rcx
         ret
 
 _sub:
-        mov rsi, [num1]
-        mov rdi, [num2]
-        sub rax, rbx
+        sub rbx, rcx
         ret
 
 _mul:
-        mov rsi, [num1]
-        mov rdi, [num2]
-        imul rax, rbx
+        imul rbx, rcx
         ret
 
 _div:
-        mov rax, [num1]
+        mov rax, rbx
         xor rdx, rdx
-        div qword [num2]
+        div rcx
         ret
 
 _exit:
