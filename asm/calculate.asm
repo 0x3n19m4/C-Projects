@@ -89,8 +89,8 @@ _ask_and_inpt_scnd_num:
         ret
 
 _sum:
-        mov rbx, [num1]
-        mov rcx, [num2]
+        mov rax, [num1]
+        mov rbx, [num2]
         add rbx, rcx
         ret
 
