@@ -36,13 +36,13 @@ _compare_and_jump:
         je _sum
 
         cmp al, '-'
-        je _subb
+        je _sub
 
         cmp al, '*'
-        je _mull
+        je _mul
 
         cmp al, '/'
-        je _divs
+        je _div
         ret
 
 
@@ -92,13 +92,13 @@ _sum:
         mov rbx, [num1]
         mov rcx, [num2]
         add rbx, rcx
-        syscall
-        jmp _exit
+        ret
 
-_subb:
+_sub:
         mov rax, [num1]
         mov rbx, [num2]
         sub rax, rbx
+        ret
 
 _exit:
         mov rax, 60
