@@ -89,20 +89,20 @@ _ask_and_inpt_scnd_num:
         ret
 
 _sum:
-        mov rax, [num1]
-        mov rbx, [num2]
+        mov rsi, [num1]
+        mov rdi, [num2]
         add rbx, rcx
         ret
 
 _sub:
-        mov rax, [num1]
-        mov rbx, [num2]
+        mov rsi, [num1]
+        mov rdi, [num2]
         sub rax, rbx
         ret
 
 _mul:
-        mov rax, [num1]
-        mov rbx, [num2]
+        mov rsi, [num1]
+        mov rdi, [num2]
         imul rax, rbx
         ret
 
