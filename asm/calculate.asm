@@ -25,11 +25,11 @@ _start:
         call _compare_and_jump
 
 _compare_and_jump:
-        mov rsi, [num1]
+        lea rsi, [num1]
         call _atoi
         mov rbx, rax
 
-        mov rsi, [num2]
+        lea rsi, [num2]
         call _atoi
         mov rcx, rax
 
