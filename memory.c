@@ -11,8 +11,8 @@
 // {
     //MALLOC
     /*
-    int *ptr = malloc(sizeof(int)); // выделяем память для одного int
-    *ptr = 24;      // помещаем значение в выделенную память
+    int *ptr = malloc(sizeof(int));
+    *ptr = 24;
  
     printf("%d \n", *ptr);
     free(ptr);
