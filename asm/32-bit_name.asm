@@ -20,33 +20,33 @@ _start:
                                         
 _Qstn:                                  
         mov eax, 4	; syscall sys_write                      
-        mov edi, 1	; stdout descriptor  
-        mov esi, text1  ; text1 output                
-        mov edx, 19	; lenght text1   
+        mov ebx, 1	; stdout descriptor  
+        mov ecx, text1  ; text1 output                
+        mov edx, 19	; lenght of text1   
         int 0x80        ; 32-bit syscall         
         ret                             
                                         
 _GetName:                               
         ; input                         
-        mov rax, 0                      
-        mov rdi, 0                      
-        mov rsi, name                   
-        mov rdx, 16                     
-        syscall                         
+        mov eax, 3      ; syscall sys_read                
+        mov ebx, 0      ; stdin descriptor                
+        mov ecx, name                   
+        mov edx, 16                     
+        int 0x80                         
         ret                             
                                         
 _HelloPrnt:                             
-        mov rax, 1                      
-        mov rdi, 1                      
-        mov rsi, text2                  
-        mov rdx, 7                      
-        syscall                         
+        mov eax, 3                      
+        mov ebx, 1                      
+        mov ecx, text2                  
+        mov edx, 7                      
+        int 0x80                         
         ret                             
                                         
 _NamePrnt:                              
-        mov rax, 1                      
-        mov rdi, 1                      
-        mov rsi, name                   
+        mov eax, 3                      
+        mov ebx, 1                      
+        mov ecx, name                   
         mov rdx, 16                     
-        syscall                         
+        int 0x80                         
         ret 
