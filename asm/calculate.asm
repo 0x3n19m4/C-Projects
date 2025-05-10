@@ -4,7 +4,7 @@ section .bss
         num2 resb 16
 
 section .data
-        action db "Choosee an action[ + - * / ]: ", 0xA
+        action db "Choose an action[ + - * / ]: ", 0xA
         fst_num db "Enter first number: ", 0xA
         scnd_num db "Enter second number: ", 0xA
 
