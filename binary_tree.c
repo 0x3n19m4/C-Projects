@@ -22,7 +22,7 @@ struct node* insert(struct node* root, int number)
     if (number < root -> number)
         root -> left = insert(root -> left, number);
     else
-        root -> left = insert(root -> right, number);
+        root -> right = insert(root -> right, number);
 
     return root;
 };
