@@ -14,7 +14,7 @@ int main(int )
     }
 
     for (int j = 0; j < i; j++) {
-        printf("ASCII код %c = %d\n", str[j], int_str[j]);
+        printf("ASCII code of %c = %d\n", str[j], int_str[j]);
     }
     
 }	
